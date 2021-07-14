@@ -1,0 +1,95 @@
+%Define the document%
+\documentclass[12pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[a4paper, margin=2cm]{geometry}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[none]{hyphenat}
+\usepackage[table]{xcolor} %this might be redundant' as xcolor loaded later
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{color, soul} %allows todo highlighting
+\usepackage[ddmmyyyy]{datetime}
+\usepackage{xcolor}
+\usepackage[framemethod=tikz]{mdframed}
+\usepackage{listings}
+\usepackage{matlab-prettifier}
+
+\renewcommand{\contentsname}{Table Of Contents}
+%\renewcommand{\listfigurename}{Figures}
+%\renewcommand{\listtablename}{Tables}
+
+%Fontset Changing%
+%\usepackage[defaultfam,extralight,tabular,lining]{montserrat} % Use Montserrat Font.
+\renewcommand{\familydefault}{\sfdefault} % Sans-Serif Default family (similar to helvetica)
+
+% Bibliography style; suitable for UniSA
+\usepackage{natbib}
+\bibpunct{(}{)}{;}{a}{}{,} %Sets the punctuation for UniSA Style
+\bibliographystyle{/Users/kobrien/Documents/Study/unisa2020}
+
+% Remove the noindent
+\setlength{\parindent}{0em}
+
+% Define the colours for block styles.
+\mdfdefinestyle{bluestyle}{%
+linecolor=blue!100!,outerlinewidth=1pt,%
+frametitlerule=true,frametitlefont=\sffamily\bfseries\color{white},%
+frametitlerulewidth=1pt,frametitlerulecolor=blue!100,%
+frametitlebackgroundcolor=blue!100!,
+backgroundcolor=blue!5!,
+innertopmargin=\topskip,
+roundcorner=4pt
+}
+
+\mdfdefinestyle{redstyle}{%
+linecolor=red!100,outerlinewidth=1pt,%
+frametitlerule=true,frametitlefont=\sffamily\bfseries\color{white},%
+frametitlerulewidth=1pt,frametitlerulecolor=red!100,%
+frametitlebackgroundcolor=red!100,
+backgroundcolor=red!10!,
+innertopmargin=\topskip,
+roundcorner=4pt
+}
+
+\mdfdefinestyle{greenstyle}{%
+linecolor=green!60!black,outerlinewidth=1pt,%
+frametitlerule=true,frametitlefont=\sffamily\bfseries\color{white},%
+frametitlerulewidth=1pt,frametitlerulecolor=green!60!black,%
+frametitlebackgroundcolor=green!60!black,
+backgroundcolor=green!10!,
+innertopmargin=\topskip,
+roundcorner=4pt
+}
+
+\mdfdefinestyle{graystyle}{%
+linecolor=gray,outerlinewidth=1pt,%
+frametitlerule=true,frametitlefont=\sffamily\bfseries\color{black},%
+frametitlerulewidth=1pt,frametitlerulecolor=gray,%
+frametitlebackgroundcolor=gray,
+backgroundcolor=lightgray!20,
+innertopmargin=\topskip,
+roundcorner=4pt
+}
+
+% Create new environments using colour blocks (Exmaple, Question, Answer etc.)
+
+\newmdenv[style=bluestyle]{quest}
+\newenvironment{question}[1]
+  {\begin{quest}[frametitle=#1]}
+  {\end{quest}}
+
+\newmdenv[style=redstyle]{ans}
+\newenvironment{answer}[1]
+  {\begin{ans}[frametitle=#1]}
+  {\end{ans}}
+
+\newmdenv[style=greenstyle]{code}
+\newenvironment{codeblock}[1]
+  {\begin{code}[frametitle=#1]}
+  {\end{code}}
+
+\newmdenv[style=graystyle]{ex}
+\newenvironment{example}[1]
+  {\begin{ex}[frametitle=#1]}
+  {\end{ex}}

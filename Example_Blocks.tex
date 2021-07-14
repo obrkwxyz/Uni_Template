@@ -1,0 +1,63 @@
+\begin{question}{Question 1:}
+  For all $x$, determine the coefficients in the FIR filter that result in a filter that performs as you'd expect a FIR filter to work.
+\end{question}
+
+\begin{answer}{Answer 1:}
+Yo Shawty, that jacket is tighhht son, yaaah meaaan. Right, left, Right, left Hughhhh sonn Hughhh. Right, left, right, left Hughh sonn Hughh.
+\end{answer}
+
+\begin{example}{Example 1:}
+I am a world before I am a Man. I was a creature before i could stand. I will remember before i forget. BEFORE I FORGET;
+\end{example}
+
+\begin{codeblock}{Example Codeblock for MATLAB}
+Here is some example code you might like to work with; this code does nothing important :) :) :) :) :) :) :)\\
+
+Listing \ref{lst:Matlab} shows an interesting example of code within matlab.
+\begin{lstlisting}[style=Matlab-editor,basicstyle=\mlttfamily,caption={MATLAB sample} \label{lst:Matlab}]
+%% displaying some quantisation error
+signedness=1;   % 1=signed, 0=unsigned;
+intbits=5;      % 2^5   = 32
+fractbits=1;   % 2^-10 =
+wordLen=signedness+intbits+fractbits
+q = fixed.Quantizer(signedness,wordLen,fractbits, ...
+  'Nearest','Saturate')
+
+for x=0:1:20
+  sin(x)+1
+end
+
+t=0:.01:100;
+x=(10*sin(t)).*(3*cos(2*t));
+x_f = fi(x,signedness,wordLen,fractbits);
+
+
+%{
+  This is just a multiline
+  comment to see this command works
+%}
+\end{lstlisting}
+\end{codeblock}
+
+
+
+\begin{codeblock}{Example Codeblock for Python}
+In listing \ref{lst:Python} the python language pack for listing is explored.
+
+\begin{lstlisting}[language=python,basicstyle=\mlttfamily,caption={Python Sample} \label{lst:Python}]
+string1 = "Linux"
+string2 = "Mint"
+joined_string = string1 + string2
+print(joined_string)
+
+# Assign a numeric value
+number = 70
+
+# Check the is more than 70 or not
+if (number >= 70):
+    print("You have passed")
+else:
+    print("You have not passed")
+\end{lstlisting}
+\end{codeblock}
+\clearpage
