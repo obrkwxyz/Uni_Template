@@ -3,6 +3,7 @@
 \usepackage[T1]{fontenc}
 \usepackage[a4paper, margin=2cm]{geometry}
 \usepackage{amsmath}
+\usepackage{amsfonts}
 \usepackage{graphicx}
 \usepackage[none]{hyphenat}
 \usepackage[table]{xcolor} %this might be redundant' as xcolor loaded later
@@ -31,6 +32,11 @@
 % Remove the noindent
 \setlength{\parindent}{0em}
 
+% Set some common math letters
+\newcommand\R{$\mathbb{R}$}
+\newcommand\I{$\mathbb{I}$}
+\newcommand\C{$\mathbb{C}$}
+\newcommand\Z{$\mathbb{Z}$}
 % Define the colours for block styles.
 \mdfdefinestyle{bluestyle}{%
 linecolor=blue!100!,outerlinewidth=1pt,%
