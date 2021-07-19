@@ -1,5 +1,6 @@
 %Define the document%
 \documentclass[12pt]{article}
+\usepackage[ddmmyyyy]{datetime}
 \usepackage[T1]{fontenc}
 \usepackage[a4paper, margin=2cm]{geometry}
 \usepackage{amsmath}
@@ -10,34 +11,44 @@
 \usepackage{enumitem}
 \usepackage{float}
 \usepackage{color, soul} %allows todo highlighting
-\usepackage[ddmmyyyy]{datetime}
 \usepackage{xcolor}
-\usepackage[framemethod=tikz]{mdframed}
+\usepackage[framemethod=tikz]{mdframed} % Frames and Borders
 \usepackage{listings}
 \usepackage{matlab-prettifier}
 
-\renewcommand{\contentsname}{Table Of Contents}
-%\renewcommand{\listfigurename}{Figures}
-%\renewcommand{\listtablename}{Tables}
 
-%Fontset Changing%
+%Rename Section Headers;
+\renewcommand{\contentsname}{Table Of Contents} % Default "Contents"
+%\renewcommand{\listfigurename}{Figures} % Default "List of Figures"
+%\renewcommand{\listtablename}{Tables} % Default "List of Tables"
+
+%Font Changing:
 %\usepackage[defaultfam,extralight,tabular,lining]{montserrat} % Use Montserrat Font.
 \renewcommand{\familydefault}{\sfdefault} % Sans-Serif Default family (similar to helvetica)
 
-% Bibliography style; suitable for UniSA
+% Bibliography style; suitable for UniSA-Harvard Referencing Standard Style Guide
+% natbib is heavily deprecated and not updated since the 90's BibLaTeX /Biber is preferred
+% I just havent written an updated .bst for it yet.
 \usepackage{natbib}
 \bibpunct{(}{)}{;}{a}{}{,} %Sets the punctuation for UniSA Style
 \bibliographystyle{/Users/kobrien/Documents/Study/unisa2020}
 
-% Remove the noindent
+% Control the indent:
 \setlength{\parindent}{0em}
 
-% Set some common math letters
-\newcommand\R{$\mathbb{R}$}
-\newcommand\I{$\mathbb{I}$}
-\newcommand\C{$\mathbb{C}$}
-\newcommand\Z{$\mathbb{Z}$}
-% Define the colours for block styles.
+% Set some common math letters:
+\newcommand{\R}{$\mathbb{R}$}
+\newcommand{\I}{$\mathbb{I}$}
+\newcommand{\C}{$\mathbb{C}$}
+\newcommand{\Z}{$\mathbb{Z}$}
+
+% Set some common abbreviations:
+\newcommand{\ie}{\textit{i}.\textit{e}.,}
+\newcommand{\eg}{\textit{e}.\textit{g}.,}
+
+
+% Define the colours for block styles.%
+%Blue Section Blocks
 \mdfdefinestyle{bluestyle}{%
 linecolor=blue!100!,outerlinewidth=1pt,%
 frametitlerule=true,frametitlefont=\sffamily\bfseries\color{white},%
@@ -48,6 +59,7 @@ innertopmargin=\topskip,
 roundcorner=4pt
 }
 
+%Red Section Blocks
 \mdfdefinestyle{redstyle}{%
 linecolor=red!100,outerlinewidth=1pt,%
 frametitlerule=true,frametitlefont=\sffamily\bfseries\color{white},%
@@ -58,6 +70,7 @@ innertopmargin=\topskip,
 roundcorner=4pt
 }
 
+%Green Section Blocks
 \mdfdefinestyle{greenstyle}{%
 linecolor=green!60!black,outerlinewidth=1pt,%
 frametitlerule=true,frametitlefont=\sffamily\bfseries\color{white},%
@@ -68,6 +81,7 @@ innertopmargin=\topskip,
 roundcorner=4pt
 }
 
+%Grey Section Blocks
 \mdfdefinestyle{graystyle}{%
 linecolor=gray,outerlinewidth=1pt,%
 frametitlerule=true,frametitlefont=\sffamily\bfseries\color{white},%
@@ -78,8 +92,19 @@ innertopmargin=\topskip,
 roundcorner=4pt
 }
 
-% Create new environments using colour blocks (Exmaple, Question, Answer etc.)
+\mdfdefinestyle{greenNoTitle}{%
+linecolor=green!60!black,outerlinewidth=1pt,%
+frametitlerule=false,frametitlefont=\sffamily\bfseries\color{white},%
+frametitlerulewidth=0pt,frametitlerulecolor=green!60!black,%
+frametitlebackgroundcolor=green!60!black,
+backgroundcolor=green!10,
+% innertopmargin=\topskip,
+roundcorner=4pt
+}
 
+
+
+% Create new environments using colour blocks (Exmaple, Question, Answer etc.)
 \newmdenv[style=bluestyle]{quest}
 \newenvironment{question}[1]
   {\begin{quest}[frametitle=#1]}
@@ -99,3 +124,8 @@ roundcorner=4pt
 \newenvironment{example}[1]
   {\begin{ex}[frametitle=#1]}
   {\end{ex}}
+
+\newmdenv[style=greenNoTitle]{titles}
+\newenvironment{title1}[1]
+  {\begin{titles}}
+  {\end{titles}}
