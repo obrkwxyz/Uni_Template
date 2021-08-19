@@ -1,40 +1,41 @@
 \begin{question}{Question 1:}
-  For all $x$, determine the coefficients in the FIR filter that result in a filter that performs as you'd expect a FIR filter to work.
+  To enable graduates to develop the skills required by engineering professionals in negotiating, planning, designing, constructing, implementing, testing and reporting engineering developments, schemes or designs.
+
+
 \end{question}
 
 \begin{answer}{Answer 1:}
-Yo Shawty, that jacket is tighhht son, yaaah meaaan. Right, left, Right, left Hughhhh sonn Hughhh. Right, left, right, left Hughh sonn Hughh.
+The course will utilise real projects provided by industry with industrial representatives acting as clients to the students. Different developments or projects will be offered each year. Students will first develop a tender and then produce a feasibility study for the development. The course is undertaken by the class acting as consulting companies with the management and organisation of that company being the responsibility of the students. Regular meetings with the lecturers and industry clients will review progress and guide the teams in the projects. Significant emphasis will be placed on the social, environmental, international, political and economic contexts applicable to each project.
 \end{answer}
 
 \begin{example}{Example 1:}
-I am a world before I am a Man. I was a creature before i could stand. I will remember before i forget. BEFORE I FORGET;
+To introduce the fundamental concepts and practice of engineering research and enable students to undertake a major research project in a specialist area of engineering.
 \end{example}
 
 \begin{title1}{1}
-I am a world before I am a Man. I was a creature before i could stand. I will remember before i forget. BEFORE I FORGET;
+  Students will learn about why research is carried out and how undertaking it results in establishing facts, new knowledge being discovered and new conclusions being reached. They will gain an understanding that what they see as ‘real’ is influenced by the way they think this knowledge is created (ontology). This will influence the choices they make as researchers about the research approach / design (i.e. methodology- quantitative, qualitative and mixed) and data collecting tools (methods) for their research (epistemology). They will learn how to write a literature review and the role it plays in identifying research aims, questions/ hypotheses, data analysis and how to write a research plan. The elements of reliable/ credible research, the ethics and work safety issues associated with research will also be explored.
+
+  Students who follow this course with ENGG 4010, ENGG 4011, or ENGG 4012 are expected to continue the same research project.
 \end{title1}
 
 \begin{codeblock}{Example Codeblock for MATLAB}
-Here is some example code you might like to work with; this code does nothing important :) :) :) :) :) :) :)\\
+Here is some example code block you might like to work with; this code does nothing important :) :) :) :) :) :) :)\\
 
 Listing \ref{lst:Matlab} shows an interesting example of code within matlab.
 \begin{lstlisting}[style=Matlab-editor,basicstyle=\mlttfamily,caption={MATLAB sample} \label{lst:Matlab}]
-%% displaying some quantisation error
-signedness=1;   % 1=signed, 0=unsigned;
-intbits=5;      % 2^5   = 32
-fractbits=1;   % 2^-10 =
-wordLen=signedness+intbits+fractbits
-q = fixed.Quantizer(signedness,wordLen,fractbits, ...
-  'Nearest','Saturate')
-
-for x=0:1:20
-  sin(x)+1
+h_M = reshape(h,M,[]); % Reshape the matrix, M rows
+% plot the individual filters
+figure
+stem(h_M(1,:), ':diamondr', 'MarkerSize',5)
+hold;
+for i = 2:M
+   stem(h_M(i,:), 'LineStyle','none','MarkerSize',2)
 end
-
-t=0:.01:100;
-x=(10*sin(t)).*(3*cos(2*t));
-x_f = fi(x,signedness,wordLen,fractbits);
-
+xlim([-1 n/M+1])
+ylim([min(min(h_M)-0.0007) max(max(h_M)+0.0007)])
+title('Prototype Filter M-Arm')
+xlabel('Samples'), ylabel('Magnitude')
+hold off;
 
 %{
   This is just a multiline
