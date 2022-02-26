@@ -1,0 +1,65 @@
+\begin{question}{Question 1:}
+  here we ask a question, in the \textbf{``question''} environment.
+\end{question}
+
+\begin{answer}{Answer 1:}
+Here we answer the question, in the \textbf{``answer''} environment.
+\end{answer}
+
+\begin{example}{Example 1:}
+Here is an example in a coloured block. This environment is \textbf{``example''.}
+\end{example}
+
+\begin{title1}{1}
+Here is another example in a different coloured block. This environment is \textbf{title1} as an example without a title.
+\end{title1}
+
+\begin{codeblock}{Example Codeblock for MATLAB}
+Here is some example code you might like to work with; this code does nothing important :) :) :) :) :) :) :)\\
+This is the \textbf{``codeblock"} environment. below is a listing using style=matlab-editor from the \verb|\usepackage{matlab-prettifier}| package
+
+Listing \ref{lst:Matlab} shows an interesting example of code within matlab.
+\begin{lstlisting}[style=Matlab-editor,basicstyle=\mlttfamily,caption={MATLAB sample} \label{lst:Matlab}]
+%% displaying some quantisation error
+signedness=1;   % 1=signed, 0=unsigned;
+intbits=5;      % 2^5   = 32
+fractbits=1;   % 2^-10 =
+wordLen=signedness+intbits+fractbits
+q = fixed.Quantizer(signedness,wordLen,fractbits, ...
+  'Nearest','Saturate')
+
+for x=0:1:20
+  sin(x)+1
+end
+
+t=0:.01:100;
+x=(10*sin(t)).*(3*cos(2*t));
+x_f = fi(x,signedness,wordLen,fractbits);
+
+
+%{
+  This is just a multiline
+  comment to see this command works
+%}
+\end{lstlisting}
+\end{codeblock}
+
+
+
+\begin{codeblock}{Example Codeblock for Python}
+In listing \ref{lst:Python} the python language pack for listing is explored.
+
+\begin{lstlisting}[language=python,basicstyle=\mlttfamily,caption={Python Sample} \label{lst:Python}]
+string1 = "Kane"
+string2 = "O'Brien"
+joined_string = string1 + string2
+print(joined_string)
+number = 70
+# Check the is more than 70 or not
+if (number >= 70):
+    print("The number is atleast 70")
+else:
+    print("The number is less than 70")
+\end{lstlisting}
+\end{codeblock}
+\clearpage

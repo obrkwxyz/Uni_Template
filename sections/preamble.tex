@@ -1,0 +1,188 @@
+%!TEX root = ../Main.tex
+
+%Define the document%
+\documentclass[12pt, a4paper]{article}
+% \documentclass[12pt, a4paper, draft]{article}
+
+% \usepackage[utf8]{inputenc} % LaTeX Fonts only
+\usepackage[T1]{fontenc}  % XeLaTeX Fonts -- Change fonts in the following
+\usepackage{mlmodern}     % XeLaTeX Fonts -- Modern Latin Modern (blacker)
+% \usepackage{lmodern}      % LaTeX Fonts 
+%% Use the following for system fonts
+% \usepackage{fontspec} % Enable this to change to system fonts
+% \setmainfont{Arial}   % System Font ie Arial
+
+\usepackage[ddmmyyyy]{datetime}
+\usepackage[margin=2cm]{geometry}
+
+\usepackage{amsmath, amsfonts, amssymb}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{placeins} % Float barrier
+
+\usepackage{enumitem}
+
+\usepackage[table]{xcolor}
+\usepackage{multirow}     % Allow multi-row and multicolumn, table modification
+\usepackage{xcolor}       % Include Colours
+\usepackage[framemethod=tikz]{mdframed} % Frames and Borders
+\usepackage{subcaption}   % caption 4A,4B etc.
+
+\usepackage{listings}     % Code listings
+\usepackage{matlab-prettifier} % Code listings
+
+
+% If its a draft, make it easier to markup the printed document
+\usepackage{ifdraft}
+\ifdraft{\usepackage[none]{hyphenat}}{}
+\ifdraft{\usepackage{color, soul}}{}
+\ifdraft{\usepackage{setspace}}{}
+\ifdraft{\doublespace}{}
+
+
+% The following packages are needed for 
+% some matlab2tikz features, otherwise can be ignored.
+\usepackage{pgfplots}
+\usepackage{grffile}
+\pgfplotsset{compat=newest}
+\usetikzlibrary{plotmarks}
+\usetikzlibrary{arrows.meta}
+\usepgfplotslibrary{patchplots}
+
+
+% Headers, Footers
+\usepackage{fancyhdr}     % Fancy Header Footers
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhfoffset[L]{2em}    % left extra length rule
+\fancyhfoffset[R]{2em}    % right extra length rule
+\renewcommand{\headrulewidth}{1.2pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\fancyhead{}
+\setlength{\headheight}{15pt}
+\fancyhead[C]{\textbf{\headerTitle}}
+\fancyfoot{}
+\fancyfoot[C]{\thepage}
+\fancyfoot[L]{\hspace{2em}KANE O'BRIEN}
+\fancyfoot[R]{\hspace{2em}UNISA: 110268293}
+
+\usepackage{natbib} %% Do not use natbib, use bibtex/biber - this bst has been modified extensively to suit.
+\bibpunct{(}{)}{;}{a}{}{,} %Sets the punctuation for UniSA Style
+\bibliographystyle{/Users/kobrien/Documents/Study/unisa2020}
+
+% Control the indent; Kane strongly dislikes indents.
+\setlength{\parindent}{0em}
+% Rename "Contents"; Contents is ugly.
+\renewcommand{\contentsname}{Table Of Contents} % Default "Contents"
+\numberwithin{equation}{section}
+
+% Set some common math letters:
+\newcommand{\R}{$\mathbb{R}$}
+\newcommand{\I}{$\mathbb{I}$}
+\newcommand{\C}{$\mathbb{C}$}
+\newcommand{\Z}{$\mathbb{Z}$}
+\newcommand{\ihat}{\textbf{\^\i}}
+\newcommand{\jhat}{\textbf{\^\j}}
+\newcommand{\khat}{\textbf{\^k}}
+
+% Set some common abbreviations:
+\newcommand{\ie}{\textit{i}.\textit{e}.,}
+\newcommand{\eg}{\textit{e}.\textit{g}.,}
+
+\usepackage{hyperref}
+% \usepackage{bookmark}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=magenta,
+    pdftitle={\submissionTitle},
+    pdfauthor={Kane O'Brien}
+    pdfpagemode=FullScreen,
+    bookmarksopen=true
+    }
+
+%% Past this is relatively unimportant packages.
+
+% Create new environments (Question, Answer, Code, Example, Titles)
+% using colour blocks 
+% The colour /style is defined After this
+\newmdenv[style=bluestyle]{quest}
+\newenvironment{question}[1]
+  {\begin{quest}[frametitle=#1]}
+  {\end{quest}}
+
+\newmdenv[style=redstyle]{ans}
+\newenvironment{answer}[1]
+  {\begin{ans}[frametitle=#1]}
+  {\end{ans}}
+
+\newmdenv[style=greenstyle]{code}
+\newenvironment{codeblock}[1]
+  {\begin{code}[frametitle=#1]}
+  {\end{code}}
+
+\newmdenv[style=graystyle]{ex}
+\newenvironment{example}[1]
+  {\begin{ex}[frametitle=#1]}
+  {\end{ex}}
+
+\newmdenv[style=greenNoTitle]{titles}
+\newenvironment{title1}[1]
+  {\begin{titles}}
+  {\end{titles}}
+
+% Define the colours and environment for block styles.%
+%Blue Section Blocks
+\mdfdefinestyle{bluestyle}{%
+linecolor=blue!100!,outerlinewidth=1pt,%
+frametitlerule=true,frametitlefont=\sffamily\bfseries\color{white},%
+frametitlerulewidth=1pt,frametitlerulecolor=blue!100,%
+frametitlebackgroundcolor=blue!100!,
+backgroundcolor=blue!5!,
+innertopmargin=\topskip,
+roundcorner=4pt
+}
+
+%Red Section Blocks
+\mdfdefinestyle{redstyle}{%
+linecolor=red!100,outerlinewidth=1pt,%
+frametitlerule=true,frametitlefont=\sffamily\bfseries\color{white},%
+frametitlerulewidth=1pt,frametitlerulecolor=red!100,%
+frametitlebackgroundcolor=red!100,
+backgroundcolor=red!10!,
+innertopmargin=\topskip,
+roundcorner=4pt
+}
+
+%Green Section Blocks
+\mdfdefinestyle{greenstyle}{%
+linecolor=green!60!black,outerlinewidth=1pt,%
+frametitlerule=true,frametitlefont=\sffamily\bfseries\color{white},%
+frametitlerulewidth=1pt,frametitlerulecolor=green!60!black,%
+frametitlebackgroundcolor=green!60!black,
+backgroundcolor=green!10!,
+innertopmargin=\topskip,
+roundcorner=4pt
+}
+
+%Grey Section Blocks
+\mdfdefinestyle{graystyle}{%
+linecolor=gray,outerlinewidth=1pt,%
+frametitlerule=true,frametitlefont=\sffamily\bfseries\color{white},%
+frametitlerulewidth=1pt,frametitlerulecolor=gray,%
+frametitlebackgroundcolor=gray,
+backgroundcolor=lightgray!20,
+innertopmargin=\topskip,
+roundcorner=4pt
+}
+
+\mdfdefinestyle{greenNoTitle}{%
+linecolor=green!60!black,outerlinewidth=1pt,%
+frametitlerule=false,frametitlefont=\sffamily\bfseries\color{white},%
+frametitlerulewidth=0pt,frametitlerulecolor=green!60!black,%
+frametitlebackgroundcolor=green!60!black,
+backgroundcolor=green!10,
+% innertopmargin=\topskip,
+roundcorner=4pt
+}

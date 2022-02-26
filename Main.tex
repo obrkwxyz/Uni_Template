@@ -1,0 +1,38 @@
+% !TEX program = xelatex
+
+
+%% Setup the title page here
+\newcommand{\courseName}{Subject Title}
+\newcommand{\courseCode}{EEET 1234}
+\newcommand{\dueDate}{\today}
+\newcommand{\supervisors}{Professor Elemental}
+\newcommand{\submissionType}{Practical Report}
+\newcommand{\submissionTitle}{Practical in \LaTeX}
+\newcommand{\headerTitle}{\submissionTitle}
+
+
+\input{sections/preamble.tex}
+\begin{document}
+\pagenumbering{roman} %i,ii etc Page Numbers
+\input{sections/title.tex}\FloatBarrier
+
+\pagenumbering{arabic} % 1,2... etc Page Numbers
+\section{Introduction}
+\input{sections/introduction.tex}\FloatBarrier
+
+\clearpage\section{Background}
+% \input{sections/background.tex}\FloatBarrier
+\subsection{Background subsection 1}
+% \input{sections/Background.tex}\FloatBarrier
+
+\clearpage\section{Conclusion}
+\input{sections/Conclusion.tex}\FloatBarrier
+
+\clearpage
+% \bibliography{/Users/kobrien/Documents/Study/Bib_Main}
+
+\clearpage\section{Appendices}
+% \subsection{Register of Files}\label{appendix-A}
+% \input{sections/Appendix/Appendix1.tex}\FloatBarrier
+
+\end{document}
