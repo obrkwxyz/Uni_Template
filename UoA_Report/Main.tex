@@ -1,0 +1,50 @@
+% ! TEX program = xelatex
+
+
+%% Setup the title page here
+\newcommand{\courseName}{Subject Title}
+\newcommand{\courseCode}{ELEC ENG 7059}
+\newcommand{\dueDate}{01/01/2023}
+\newcommand{\supervisors}{AsPr. Brian Ng}
+\newcommand{\submissionType}{Radar Principles and Fundamentals}
+\newcommand{\submissionTitle}{Practical Report 1\\ Radar Systems}
+\newcommand{\headerTitle}{Radar Systems}
+
+
+\input{sections/00_preamble.tex}
+\begin{document}
+\pagenumbering{roman} %i,ii etc Page Numbers
+\input{sections/00_title.tex}\FloatBarrier
+
+\pagenumbering{arabic} % 1,2... etc Page Numbers
+\section{Introduction}
+\input{sections/01_introduction.tex}\FloatBarrier
+
+% \clearpage\section{Image Compression}
+% \input{sections/01_Image.tex}\FloatBarrier
+
+
+% \clearpage\section{Video Compression}
+% \input{sections/01_video.tex}\FloatBarrier
+
+
+\clearpage\section{Conclusion}
+\input{sections/01_conclusion.tex}\FloatBarrier
+
+% \clearpage\section{Code Appendix}
+% \input{sections/01_code_apdx.tex}\FloatBarrier
+
+\cite{Holdsworth2020} suggest that the following is possible
+
+\autocite{fabrizioHighFrequencyHorizon2013}
+    
+
+\clearpage
+% \bibliography{} %NatBiB
+\printbibliography %BibTex/Biber 
+
+% \clearpage\section{Appendices}
+% % \subsection{Register of Files}\label{appendix-A}
+% % \input{sections/Appendix/Appendix1.tex}\FloatBarrier
+
+\end{document}

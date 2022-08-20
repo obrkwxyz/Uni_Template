@@ -4,9 +4,9 @@
 \documentclass[12pt, a4paper]{article}
 % \documentclass[12pt, a4paper, draft]{article}
 
-% \usepackage[utf8]{inputenc} % LaTeX Fonts only
 \usepackage[T1]{fontenc}  % XeLaTeX Fonts -- Change fonts in the following
 \usepackage{mlmodern}     % XeLaTeX Fonts -- Modern Latin Modern (blacker)
+% \usepackage[utf8]{inputenc} % LaTeX Fonts only
 % \usepackage{lmodern}      % LaTeX Fonts 
 %% Use the following for system fonts
 % \usepackage{fontspec} % Enable this to change to system fonts
@@ -64,11 +64,14 @@
 \fancyfoot{}
 \fancyfoot[C]{\thepage}
 \fancyfoot[L]{\hspace{2em}KANE O'BRIEN}
-\fancyfoot[R]{\hspace{2em}UNISA: 110268293}
+\fancyfoot[R]{\hspace{2em}UoA: A1880046}
 
-\usepackage{natbib} %% Do not use natbib, use bibtex/biber - this bst has been modified extensively to suit.
-\bibpunct{(}{)}{;}{a}{}{,} %Sets the punctuation for UniSA Style
-\bibliographystyle{/Users/kobrien/Documents/Study/unisa2020}
+% \usepackage{natbib} %% Do not use natbib, use bibtex/biber - this bst has been modified extensively to suit.
+% \bibpunct{(}{)}{;}{a}{}{,} %Sets the punctuation for UniSA Style
+% \bibliographystyle{/Users/kobrien/Documents/Study/unisa2020}
+\usepackage[style=ieee, sorting=none]{biblatex}
+\addbibresource{/Users/kobrien/Documents/Study/Bib_Main_Auto.bib}
+
 
 % Control the indent; Kane strongly dislikes indents.
 \setlength{\parindent}{0em}
@@ -94,13 +97,13 @@
 \hypersetup{
     colorlinks=true,
     linkcolor=blue,
+    citecolor=blue,
     filecolor=magenta,      
     urlcolor=magenta,
-    pdftitle={\submissionTitle},
+    pdftitle={\headerTitle},
     pdfauthor={Kane O'Brien}
     pdfpagemode=FullScreen,
-    bookmarksopen=true
-    }
+    bookmarksopen=true}
 
 %% Past this is relatively unimportant packages.
 

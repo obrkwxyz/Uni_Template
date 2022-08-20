@@ -1,0 +1,725 @@
+%!TEX root = ../Main.tex
+
+\begin{codeblock}{rgb2ycb.m -- RGB => YCbCr Transform}
+This function provides optimised conversion of an RGB to YCbCr conversion of a ($m,n,3$) RGB double matrix.
+    
+\begin{lstlisting}[style=Matlab-editor,basicstyle=\mlttfamily, caption={}\label{lst:rgb2ycb}]
+   
+function  [im_ycbcr] = rgb2ycb(improc)
+%     custom RGB to YCbCr Image Transform
+%     Usage:
+%     rgb2ycb2(image); Image is [R;G;B] (m,n,3) double matrix
+%     Returns 3x rgb image, (m,n,3) double matrix [Y;0,0], [128,Cb,0], 
+%     [128,0,Cr]
+%     The function conversion to YCbCr does not comply with ITU-R BT.601
+%     however is sufficient, and requested in this form as per the 
+%     assignment sheet
+%     Nested for-loops are utilised to within this script, noting in 
+%     previous matlab versions this was a performance penalty compared to 
+%     elementwise multiplication; this is supposedly not the case in modern
+%     version; however it may be worth implementing both methods and seeing
+%     how memory moves occur / potential gains
+
+% RGB2YCbCr Transform Matrix;
+% ITU-R BT.601 : 2.51, 2.5.2 Normalised Transformation 
+T = [0.299      0.587      0.114;    ...
+    -0.1687359 -0.3312641  0.5;      ...
+     0.5       -0.4186875 -0.0813124]; 
+
+[x,y,~] = size(improc);
+im_ycbcr = zeros(x,y,3);
+
+for i =  1:x
+    for j = 1:y
+    im_ycbcr(i,j,:) = T * [improc(i,j,1);improc(i,j,2);improc(i,j,3)];
+%   Add any offset required; 
+    im_ycbcr(i,j,:) = im_ycbcr(i,j,:) + cat(3,[0],[0],[0]); 
+    end
+end
+end
+
+\end{lstlisting}
+\end{codeblock}
+\clearpage
+
+\begin{codeblock}{rgb2ycb2.m -- RGB => YCbCr Colourised Transform}
+    This function provides colourised conversion of an RGB to YCbCr conversion of a ($m,n,3$) RGB double matrix.
+    Usual chrominance layers are one-dimensional and effectively show grayscale images; this script shows  false coloured chrominance to highlight the differences
+        
+    \begin{lstlisting}[style=Matlab-editor,basicstyle=\mlttfamily, caption={}\label{lst:rgb2ycb2}]
+function  [y,cb,cr] = rgb2ycb2(improc)
+%     Custom RGB to YCbCr Colourised Image Transform
+%     Usage:
+%     rgb2ycb2(image); Image is [R;G;B] (m,n,3) double matrix
+%     Returns 3x rgb image, (m,n,3) double matrix [Y;0,0], [128,Cb,0], 
+%     [128,0,Cr]
+%     The function conversion to YCbCr does not comply with ITU-R BT.601
+%     however is sufficient, and requested in this form as per the 
+%     assignment sheet
+%     Nested for-loops are utilised to within this script, noting in 
+%     previous matlab versions this was a performance penalty compared to 
+%     elementwise multiplication; this is supposedly not the case in modern
+%     version; however it may be worth implementing both methods and seeing
+%     how memory moves occur / potential gains
+
+% RGB2YCbCr Transform Matrix;
+% ITU-R BT.601 : 2.51, 2.5.2 Normalised Transformation 
+T = [0.299      0.587      0.114;    ...
+    -0.1687359 -0.3312641  0.5;      ...
+     0.5       -0.4186875 -0.0813124]; 
+
+[x,y,~]  = size(improc);
+im_ycbcr = zeros(x,y,3);
+
+% transform the image
+for i =  1:x
+    for j = 1:y
+        im_ycbcr(i,j,:) = T * [improc(i,j,1);improc(i,j,2);improc(i,j,3)];
+    end
+end
+
+zmat = zeros(x,y);
+omat = 0.5*ones(x,y);
+y_s  = cat(3, im_ycbcr(:,:,1), zmat,zmat);
+cb_s = cat(3, omat, im_ycbcr(:,:,2), zmat);
+cr_s = cat(3, omat, zmat, im_ycbcr(:,:,3));
+y    = ycb2rgb(y_s);
+cb   = ycb2rgb(cb_s);
+cr   = ycb2rgb(cr_s);
+
+end
+
+\end{lstlisting}
+\end{codeblock}
+
+
+\begin{codeblock}{ycb2rgb.m -- YCbCr => RGB Transform}
+    This function provides conversion of a YCbCr to RGB conversion of a ($m,n,3$) RGB double matrix.
+        
+    \begin{lstlisting}[style=Matlab-editor,basicstyle=\mlttfamily, caption={}\label{lst:ycb2rgb}]
+function  [im_rgb] = ycb2rgb(improc)
+%     custom YCbCr to RGB Image Transform
+%     Usage:
+%     rgb_YCbCr(image); Image is [R;G;B] (m,n,3) double matrix
+%     Returns YCbCr image, (m,n,3) double matrix [Y;C;B]
+%     The function conversion to YCbCr does not comply with ITU-R BT.601
+%     however is sufficient, and requested in this form as per the 
+%     assignment sheet.
+%     Nested for-loops are utilised to within this script, noting in 
+%     previous matlab versions this was a performance penalty compared to 
+%     elementwise multiplication; this is supposedly not the case in modern
+%     version; however it may be worth implementing both methods and seeing
+%     how memory moves occur / potential gains
+
+% RGB2YCbCr Transform Matrix;
+% ITU-R BT.601 : 2.51, 2.5.2 Normalised Transformation 
+T = [0.299      0.587      0.114;    ...
+    -0.1687359 -0.3312641  0.5;      ...
+    0.5        -0.4186875 -0.0813124]; 
+
+% improc = (double(improc))/256;
+[x,y,~] = size(improc);
+im_rgb   = zeros(x,y,3);
+
+for i =  1:x
+    for j = 1:y
+%     im_rgb(i,j,:) = T^-1 * [improc(i,j,1); improc(i,j,2); improc(i,j,3)]; 
+%     Add any offset required; 
+%     im_rgb(i,j,:)   = im_rgb(i,j,:)   + cat(3,[0],[0],[0]);    
+%     im_rgb          = min(1,max(0,im_rgb));
+%{        
+    Use of min(max()) to limit range (0,1) results in a SERIOUSLY 
+    inefficient
+    script, using un-optimised parts of the CPU for comparison, opposed to
+    logical operation (0<=ph<=1). This results in processing taking ~ 2
+    minutes on a Ryzen9-5650x CPU, 100% Usage @ 4.4GHz. Further, its
+    addressing  the memory twice - ie Two-pass-process. This is improved 
+    and runs much faster by placeholding the value as below. Alternatively
+    working in uint8/uint16 might allow access to different hardware ALU 
+    in the CPU.
+%}        
+        % Optimised transform
+        placehold =  T^-1 * [improc(i,j,1); improc(i,j,2); improc(i,j,3)]; 
+        if placehold <= 0
+            placehold = 0;
+        elseif placehold >= 1
+            placehold = 1;
+        end
+        im_rgb(i,j,:) = placehold;
+    end
+end
+
+    \end{lstlisting}
+\end{codeblock}
+
+
+
+
+\begin{codeblock}{rgb2y.m -- RGB => Y Transform}
+    This function provides colourised conversion of an RGB to Y conversion of a ($m,n,3$) RGB double matrix. In many cases we are not interested in the chrominance layers, and hence discard.
+
+        
+    \begin{lstlisting}[style=Matlab-editor,basicstyle=\mlttfamily, caption={}\label{lst:rgb2y}]
+function  [im_y] = rgb2y(improc)
+%     custom RGB to Y Image Transform
+%     Usage:
+%     rgb2y(image); Image is [R;G;B] (m,n,3) double matrix
+%     Returns 1x Y image, (m,n,1) double matrix [Y]
+%     The function conversion to YCbCr does not comply with ITU-R BT.601
+%     however is sufficient, and requested in this form as per the 
+%     assignment sheet
+
+% RGB2YCbCr Transform Matrix;
+% ITU-R BT.601 : 2.51, 2.5.2 Normalised Transformation 
+T = [0.299      0.587      0.114;    ...
+    -0.1687359 -0.3312641  0.5;      ...
+     0.5       -0.4186875 -0.0813124]; 
+
+[x,y,~] = size(improc);
+im_ycbcr = zeros(x,y,3);
+
+for i =  1:x
+    for j = 1:y
+    im_ycbcr(i,j,:) = T * [improc(i,j,1);improc(i,j,2);improc(i,j,3)];
+%   Add any offset required; 
+    im_ycbcr(i,j,:) = im_ycbcr(i,j,:) + cat(3,[0],[0],[0]); 
+    end
+end
+im_y = im_ycbcr(:,:,1);
+end
+\end{lstlisting}
+\end{codeblock}
+\clearpage
+
+\begin{codeblock}{ds\_2h1v.m -- Chrominance Downsample 2H1V}
+    This function provides chrominance downsampling 2Horizontal, 1Vertical. It accepts, and returns an image of ($m,n,3$) however the luminance channel is un-modified.
+        
+    \begin{lstlisting}[style=Matlab-editor,basicstyle=\mlttfamily, caption={}\label{lst:ds2h1v}]
+function [im_ds2h1v] = ds_2h1v(improc)
+%     Custom Chrominance Downsampling (2h1v)
+%     Usage:
+%     ds_2h1v(image); Image is [Y;Cb;Cr] (m,n,3) double matrix
+%     It would be preferred to pass in a RGB image and handle the YCbCr
+%     translation within this script but eh.
+
+%separate the layers
+Y   = improc(:,:,1);Cb  = improc(:,:,2);Cr  = improc(:,:,3); 
+
+xstep = 2; h = xstep-1;
+ystep = 1; v = ystep-1;
+[y,x] = size(Cb);
+
+% Y = Y; -- Dont adjust the luminance layers
+% Within the loop
+
+for i = 1:ystep:y
+    for j = 1:xstep:x
+        Cb(i:i+v,j:j+h) = mean(mean(Cb(i:i+v,j:j+h)));
+        Cr(i:i+v,j:j+h) = mean(mean(Cr(i:i+v,j:j+h)));
+
+    end
+end
+im_ds2h1v = cat(3,Y,Cb,Cr);
+
+
+    \end{lstlisting}
+\end{codeblock}
+
+\begin{codeblock}{ds\_2h2v.m -- Chrominance Downsample 2H2V}
+    This function provides chrominance downsampling 2Horizontal, 2Vertical. It accepts, and returns an image of ($m,n,3$) however the luminance channel is un-modified.
+        
+    \begin{lstlisting}[style=Matlab-editor,basicstyle=\mlttfamily, caption={}\label{lst:ds2h2v}]
+function [im_ds2h2v] = ds_2h2v(improc)
+%     Custom Chrominance Downsampling (2h2v)
+%     Usage:
+%     ds_2h1v(image); Image is [Y;Cb;Cr] (m,n,3) double matrix
+%     It would be preferred to pass in a RGB image and handle the YCbCr
+%     translation within this script but eh.
+
+Y   = improc(:,:,1);Cb  = improc(:,:,2);Cr  = improc(:,:,3); %separate the layers
+
+xstep = 2; h = xstep-1;
+ystep = 2; v = ystep-1;
+[y,x] = size(Cb);
+
+% Y = Y; -- Dont adjust the luminance layers
+% Within the loop
+
+for i = 1:ystep:y
+    for j = 1:xstep:x
+        Cb(i:i+v,j:j+h) = mean(mean(Cb(i:i+v,j:j+h)));
+        Cr(i:i+v,j:j+h) = mean(mean(Cr(i:i+v,j:j+h)));
+    end
+end
+im_ds2h2v = cat(3,Y,Cb,Cr);
+    \end{lstlisting}
+\end{codeblock}
+
+\begin{codeblock}{ds\_4h4v.m -- Chrominance Downsample 4H4V}
+    This function provides chrominance downsampling 4Horizontal, 4Vertical. It accepts, and returns an image of ($m,n,3$) however the luminance channel is un-modified.
+        
+    \begin{lstlisting}[style=Matlab-editor,basicstyle=\mlttfamily, caption={}\label{lst:ds4h4v}]
+function [im_ds4h4v] = ds_4h4v(improc)
+%     Custom Chrominance Downsampling (4h4v)
+%     Usage:
+%     ds_2h2v(image); Image is [Y;Cb;Cr] (m,n,3) double matrix
+%     It would be preferred to pass in a RGB image and handle the YCbCr
+%     translation within this script but eh.
+
+Y   = improc(:,:,1);Cb  = improc(:,:,2);Cr  = improc(:,:,3); %separate the layers
+
+xstep = 4; h = xstep-1;
+ystep = 4; v = ystep-1;
+[y,x] = size(Cb);
+
+% Y = Y; -- Dont adjust the luminance layers
+% Within the loop
+
+for i = 1:ystep:y
+    for j = 1:xstep:x
+        Cb(i:i+v,j:j+h) = mean(mean(Cb(i:i+v,j:j+h)));
+        Cr(i:i+v,j:j+h) = mean(mean(Cr(i:i+v,j:j+h)));
+    end
+end
+im_ds4h4v = cat(3,Y,Cb,Cr);
+    \end{lstlisting}
+\end{codeblock}        
+\clearpage
+
+\begin{codeblock}{ds\_dct.m -- Discrete Cosin Transform Downsampling}
+    This function provides the main frequency-domain functionality of the JPEG compression algorithm with included quantisation. The accepted input is ($m,n,3$) and expected the range is (0,1) double. This function re-scales the image, and DCT downsampling of the luminance layer, however returns the chrominance layers unmodified.
+        
+    \begin{lstlisting}[style=Matlab-editor,basicstyle=\mlttfamily, caption={}\label{lst:dsdct}]
+function [im_dct] = ds_dct(improc)
+%     Custom Discrete Cosine Transform Downsampling
+%     Usage:
+%     [im_dct] = ds_dct(image); 
+%     Image is [Y;Cb;Cr] (m,n,3) double matrix
+%     Returns:
+%     im_dct (m,n,3) in YCbCr format with
+%     Y layer quantised and compressed via Jpeg methods
+
+%separate the layers
+Y   = improc(:,:,1);Cb  = improc(:,:,2);Cr  = improc(:,:,3);
+Y   = Y*256;
+Q= [8  7  7  7  8  9  11 13; ...
+    7  7  7  7  8  9  11 14; ...
+    7  7  8  8  9  11 13 16; ...
+    7  7  8  10 12 14 16 20; ...
+    8  8  9  12 15 18 22 26; ...
+    9  9  11 14 18 23 29 36; ...
+    11 11 13 16 22 29 38 49; ...
+    13 14 16 20 26 36 49 65];
+
+[y,x] = size(Y);
+X     = zeros(y,x);
+X_    = zeros(y,x);
+X_p   = zeros(y,x);
+X_hat = zeros(y,x);
+
+xstep = 8; h = xstep-1;
+ystep = 8; v = ystep-1;
+
+for i = 1:ystep:y
+    for j = 1:xstep:x
+        X(i:i+v,j:j+h)    = dct(dct(Y(i:i+v,j:j+h))')';
+        X_(i:i+v,j:j+h)  = round(X(i:i+v,j:j+h)./Q);
+        X_p(i:i+v,j:j+h) = X_(i:i+v,j:j+h).*Q;
+        X_hat(i:i+v,j:j+h)   = idct(idct(X_p(i:i+v,j:j+h))')';
+    end
+end
+X_hat  = X_hat/256;
+im_dct = cat(3,X_hat,Cb,Cr);
+end
+
+    \end{lstlisting}
+\end{codeblock}
+
+\begin{codeblock}{imsad.m -- Sum of Absolute Difference}
+    This function provides a quick reference call to calculate the sum of absolute differences between two matricies as it is called regularly in the code; it assumes both input matrix are the same size ($m,n,1$) and returns a scalar quantity.
+        
+    \begin{lstlisting}[style=Matlab-editor,basicstyle=\mlttfamily, caption={imsad(imref, impred)}\label{lst:imsad}]       
+function [im_sad] = imsad(imref,impred)
+    %     Custom Sum of Absolute Differences
+    %     Usage:
+    %     [im_sad] = imsad(image); 
+    %     Image is [Y] (m,n,1) double matrix
+    %     Returns:
+    %     Sum of Absolute Difference
+    %     \sum{\sum{\abs{a-b}}}
+
+im_sad = sum(sum(abs(imref-impred))); 
+\end{lstlisting}
+\end{codeblock}
+
+\begin{codeblock}{DS Sample Testing.m -- Down sample testbench}
+This file produces image patterns that demonstrate effective downsampling.
+        
+\begin{lstlisting}[style=Matlab-editor,basicstyle=\mlttfamily, caption={}\label{lst:dstest}]
+% DS sample testing
+% Downsampling test bench
+ay  = [1:1:32; 32:-1:1; 1:16, 1:16];
+acb = [1:32;1:16,16:-1:1; 1:32];
+acr = [1:16,1:16; 1:32; 32:-1:1];
+a = repmat(cat(3,ay,acb,acr),[4,1,1]);
+ds1 = ds_2h1v(a);
+ds2 = ds_2h2v(a);
+ds3 = ds_4h4v(a);
+figure(1)
+    subplot(4,4,[1 2 5 6]);
+    imagesc(a(:,:,2)); title("Original Chrominance [Cb] layer")
+    subplot(4,4,3);  imagesc(a(:,:,1));   title("Original Luminance (Y)");
+    subplot(4,4,4);  imagesc(ds1(:,:,1)); title("2h1v Ds Y");
+    subplot(4,4,7);  imagesc(ds2(:,:,1)); title("2h2v Ds Y");
+    subplot(4,4,8);  imagesc(ds3(:,:,1)); title("4h4v Ds Y");
+    subplot(4,4,9);  imagesc(a(:,:,2));   title("Original Cb");
+    subplot(4,4,10); imagesc(ds1(:,:,2)); title("2h1v Ds Cb");
+    subplot(4,4,11); imagesc(ds2(:,:,2)); title("2h2v Ds Cb");
+    subplot(4,4,12); imagesc(ds3(:,:,2)); title("4h4v Ds Cb");
+    subplot(4,4,13); imagesc(a(:,:,3));   title("Original Cr");
+    subplot(4,4,14); imagesc(ds1(:,:,3)); title("2h1v Ds Cr");
+    subplot(4,4,15); imagesc(ds2(:,:,3)); title("2h2v Ds Cr");
+    subplot(4,4,16); imagesc(ds3(:,:,3)); title("4h4v Ds Cr");
+    sgtitle("Downsampling Chrominance Layers of YCbCr Image")
+    \end{lstlisting}
+\end{codeblock}
+\clearpage
+
+
+\begin{codeblock}{Assignment1\_OBRIEN -- Main Assignment File}
+    This file forms the major component of the assignment - in essence the glue holding the image compression component together, and performing the majority of the video processing.
+        
+    \begin{lstlisting}[style=Matlab-editor,basicstyle=\mlttfamily, caption={}\label{lst:asst}]   
+%% Assignment 1
+%   Kane O'BRIEN (A1880046)
+%   Init Workspace
+%   I'm only interested in generating images during the test stages and for
+%   the report; otherwise display flag can/should be set false.  
+
+clear all; close all; clc;
+display_flag = true; % Turn figure generation = true;
+
+% Custom functions created and should be pathed -
+%     rgb2ycb(improc) - Convert RGB (m,n,3) matrix to YCbCr
+%     rgb2ycb2(improc)- Convert RGB (m,n,3) matrix to YCbCr, return three colorised independent channels
+%     ycb2rgb(improc) - Convert YCbCr (m,n,3) matrix to RGB
+%     rgb2y(imrpoc)   - Reduce the RGB (m,n,3) matrix to luminance (m,n,1) only
+%     ds_2h1v(improc) - Downsample Chrominance (m,n,3) layers 2h1v 
+%     ds_2h2v(improc) - Downsample Chrominance (m,n,3) layers 2h2v
+%     ds_4h4v(improc) - Downsample Chrominance (m,n,3) layers 4h4v
+%     ds_dct(improc)  - DCT quantisation
+
+
+% Quantisation Matrix from Notes 
+%{
+Note the quantisation table requires image (0,256) and my standard 
+luminance values are (0,1). Therefore the ds_dct.m script performs a 
+pre-post multiplication of the image. this script only sees image (0,1)
+Q= [8  7  7  7  8  9  11 13; ...
+    7  7  7  7  8  9  11 14; ...
+    7  7  8  8  9  11 13 16; ...
+    7  7  8  10 12 14 16 20; ...
+    8  8  9  12 15 18 22 26; ...
+    9  9  11 14 18 23 29 36; ...
+    11 11 13 16 22 29 38 49; ...
+    13 14 16 20 26 36 49 65];
+%}
+
+img = imread("Ikara.tiff", "tiff");
+% This is a large raw image converted to tiff; for sanity, crop the image
+% to a workable resolution. Cropping first saves memory and flops.
+[x_c,y_c,~] = size(img);
+x_c = x_c/2; y_c = y_c/2;
+
+im_crop = img((x_c-240:x_c+239),(y_c-320:y_c+319),:);
+xx = [x_c-240, x_c+239, x_c+239, x_c-240, x_c-240]';
+yy = [y_c-320, y_c-320, y_c+319, y_c+320, y_c-320]';
+im_proc = (double(im_crop)/256); % Bring integer to double precision \in (0,1)
+
+%% Part 1: Image Compression
+
+% Use custom functions to convert RGB => YCbCr and YCbCr => RGB;
+ycb = rgb2ycb(im_proc);
+rgb = ycb2rgb(ycb);
+
+% Separate layers
+lum=ycb(:,:,1); cb=ycb(:,:,2); cr=ycb(:,:,3); % Grayscale YCbCr
+% (individual channels
+[lumc,cbc,crc] = rgb2ycb2(im_proc); % Colourised YCbCr
+
+% Use custom functions to downsample YCB Chrominance
+im_2h1v = ycb2rgb(ds_2h1v(ycb));
+im_2h2v = ycb2rgb(ds_2h2v(ycb));
+im_4h4v = ycb2rgb(ds_4h4v(ycb));
+
+% Use a custom DCT function
+im_ds_dct = ds_dct(ycb);
+
+%% Part 2 - Video Compression
+%   My Student ID - a1880046
+%   therefore:
+%   Fast search algorithm is N-steps-Search
+%   Reference frame is 009, prediction frame 010.
+%   Appended "bar" vectors for the current processing;
+%       "hat" vectors for the best estimate
+
+ref_frame  = imread("video/Car009.tiff", "tiff"); 
+pred_frame = imread("video/Car010.tiff", "tiff"); 
+
+im_ref  = rgb2y(double(ref_frame)/256);
+im_pred = rgb2y(double(pred_frame)/256);
+sad_ops=0;
+tic
+sad_0 = imsad(im_ref,im_pred); % 0-search - 'Do Nothing' error.
+sad_ops = sad_ops+1;
+t=toc;
+
+fprintf("Complete 'Do Nothing' Search;\nTime: %2.3f seconds\nNumber of SAD Operations: %d\nSum Of Absolute Differences: %d\n\n",t,sad_ops,sad_0);
+
+%% Exhaustive search
+tic
+step_ref    = 16;   % Reference Macro Block
+step_ser    = 32;   % Search Macro Block
+step_ex     = 1;    % Exhaustive Steps
+sad_ops     = 0;    % Sum Abs Diff function calls (operations)
+x_hat=[]; y_hat=[]; sad_hat=[]; % Best Vector Movement Per Block
+
+[x,y] = size(im_ref);
+predicted_frame_exs = ones(x,y);
+
+for i_ = 1:step_ref:x-step_ref % Create Macroblocks
+    for j_ = 1:step_ref:y-step_ref 
+
+        % Determine constrained limits for search block; 
+        i_l = i_-step_ser;          if i_l <= 1; i_l = 1; end
+        i_u = i_+step_ref+step_ser; if i_u >= x; i_u = x; end
+        j_l = j_-step_ser;          if j_l <= 1; j_l = 1; end
+        j_u = j_+step_ref+step_ser; if j_u >= y; j_u = y; end
+
+        % Crop macroblocks
+        macro_ref  = im_ref(i_:i_+step_ref, j_:j_+step_ref);
+        macro_pred = im_pred(i_l:i_u-1,j_l:j_u-1); 
+
+        % Perform the search
+        x_bar=[0]; y_bar=[0]; sad_bar=[inf]; % Current best guess
+        [xx,yy] = size(macro_pred);
+
+        for ii = 1:step_ex:xx-step_ref % Exhaustive search for Ref MB in Search MB
+            for jj = 1:step_ex:yy-step_ref
+
+                %Calculate SAD
+                sad = imsad(macro_ref, macro_pred(ii:ii+step_ref, jj:jj+step_ref));
+                sad_ops = sad_ops +1;  % increment number of SAD operations
+
+                if sad < sad_bar % Better approximation found
+                    sad_bar = sad;
+                    x_bar   = ii;
+                    y_bar   = jj;
+                end
+            end
+        end
+        x_hat   = [x_hat; x_bar]; % Save the macroblock-movement vector.
+        y_hat   = [y_hat; y_bar];
+        sad_hat = [sad_hat;sad_bar]; % Save the macroblock sad (might be useful; ie sum(sad_hat)=total sad.
+        predicted_frame_exs(i_:i_+step_ref, j_:j_+step_ref) =  macro_pred(x_bar:x_bar+step_ref, y_bar:y_bar+step_ref);
+    end
+end
+t=toc;
+Exhaustive_MacroBlocks = [x_hat y_hat sad_hat];
+sad_1_ = sum(sad_hat)
+sad_1 = imsad(im_pred,predicted_frame_exs);
+fprintf("Complete Exhaustive Search;\nTime: %2.3f seconds\nNumber of SAD Operations: %d\nSum Of Absolute Differences: %d\n\n",t,sad_ops,sad_1_);
+
+%% N-Step-Search Optimised Search Algorithm
+tic
+step_ref    = 16;   % Reference Macroblock
+step_ser    = 32;   % Search Macroblock
+step_nss    = 32;   % NSS Init Steps
+sad_ops     = 0;    % Sum Abs Diff function calls (operations)
+x_hat=[]; y_hat=[]; sad_hat=[]; % Best Vector Movement Per Block
+
+[x,y] = size(im_ref);
+predicted_frame_nss = zeros(x,y);
+
+for i_ = 1:step_ref:x-step_ref % Create Macroblocks
+    for j_ = 1:step_ref:y-step_ref 
+
+        % Determine constrained limits for search block; 
+        i_l = i_ - step_ser;            if i_l <= 1; i_l = 1; end
+        i_u = i_ + step_ref + step_ser; if i_u >= x; i_u = x; end
+        j_l = j_ - step_ser;            if j_l <= 1; j_l = 1; end
+        j_u = j_ + step_ref + step_ser; if j_u >= y; j_u = y; end
+
+        % Crop macroblocks
+        macro_ref  = im_ref(i_:i_+step_ref-1, j_:j_+step_ref-1);
+        macro_pred = im_pred(i_l:i_u-1,j_l:j_u-1);
+
+        % Perform the search
+        [Xm,Ym] = size(macro_pred); % Absolute Search Size
+
+        xx = step_ser; yy = step_ser; % Center Pixel Reference: Errors
+        x_bar=[0]; y_bar=[0]; sad_bar=[inf]; % Current best guess
+        step_size = step_nss; % Reinitialise the stepsize
+
+        while step_size > 1 % repeat until the step reaches 1
+                
+            % Jump in the cardinal directions N,E,S,W; limited to available
+            % region of search block (funny edge behaviour; non-optimal)
+
+            % North
+            xxNmin = xx+step_size; xxNmax = xx+step_ref+step_size-1;
+            if xxNmin < 1;      xxNmin = 1;             xxNmax = step_ref;
+            elseif xxNmax > Xm; xxNmin = Xm-step_ref+1; xxNmax = Xm; end
+            yyNmin = yy; yyNmax = yy+step_ref-1;
+            if yyNmin < 1;      yyNmin = 1;             yyNmax = step_ref;
+            elseif yyNmax > Ym; yyNmin = Ym-step_ref+1; yyNmax = Ym; end
+
+            % South
+            xxSmin = xx-step_size; xxSmax = xx+step_ref-step_size-1;
+            if xxSmin < 1;      xxSmin = 1;             xxSmax = step_ref;
+            elseif xxSmax > Xm; xxSmin = Xm-step_ref+1; xxSmax = Xm; end 
+            yySmin = yy; yySmax = yy+step_ref-1;
+            if yySmin < 1;      yySmin = 1;             yySmax = step_ref;
+            elseif yySmax > Ym; yySmin = Ym-step_ref+1; yySmax = Ym; end
+
+            % East
+            xxEmin = xx; xxEmax = xx+step_ref-1;
+            if xxEmin < 1;      xxEmin = 1;             xxEmax = step_ref;
+            elseif xxEmax > Xm; xxEmin = Xm-step_ref+1; xxEmax = Xm; end
+            yyEmin = yy+step_size; yyEmax = yy+step_size+step_ref-1;
+            if yyEmin < 1;      yyEmin = 1;             yyEmax = step_ref;
+            elseif yyEmax > Ym; yyEmin = Ym-step_ref+1; yyEmax = Ym; end
+            % West
+            xxWmin = xx; xxWmax = xx+step_ref-1;
+            if xxWmin < 1;      xxWmin = 1;             xxWmax = step_ref;
+            elseif xxWmax > Xm; xxWmin = Xm-step_ref+1; xxWmax = Xm; end
+            yyWmin = yy-step_size; yyWmax = yy-step_size+step_ref-1;
+            if yyWmin < 1;      yyWmin = 1;             yyWmax = step_ref;
+            elseif yyWmax > Ym; yyWmin = Ym-step_ref+1; yyWmax = Ym; end
+
+    % Calcuate MacroBlock SAD
+    sadN= imsad(macro_ref,macro_pred((xxNmin):(xxNmax),(yyNmin):(yyNmax)));
+    sadS= imsad(macro_ref,macro_pred((xxSmin):(xxSmax),(yySmin):(yySmax)));
+    sadE= imsad(macro_ref,macro_pred((xxEmin):(xxEmax),(yyEmin):(yyEmax)));
+    sadW= imsad(macro_ref,macro_pred((xxWmin):(xxWmax),(yyWmin):(yyWmax)));
+    sad_ops = sad_ops+4;
+
+            [sad_bar,Idx] = min([sadN,sadS,sadE,sadW]);
+            switch Idx
+                case 1 % North
+                    xx = xxNmin;
+                    yy = yyNmin;
+                case 2 % South
+                    xx = xxSmin;
+                    yy = yySmin;
+                case 3 % East
+                    xx = xxEmin;
+                    yy = yyEmin;
+                case 4 % West
+                    xx = xxWmin;
+                    yy = yyWmin;
+            end
+                    % 2^n step-division
+                    step_size = floor(step_size/2);
+        end
+        x_hat   = [x_hat; xx];
+        y_hat   = [y_hat; yy];
+        sad_hat = [sad_hat; sad_bar];
+        predicted_frame_nss(i_:i_+step_ref-1, j_:j_+step_ref-1) = macro_pred( (xx):(xx+step_ref-1), (yy):(yy+step_ref-1));
+    end
+end
+
+t=toc;
+NSteps_MacroBlocks = [x_hat y_hat sad_hat];
+sad_2  = sum(sad_hat);
+sad_2_ = imsad(im_pred,predicted_frame_nss);
+fprintf("Complete N-Steps Search;\nTime: %2.3f seconds\nNumber of SAD Operations: %d\nSum Of Absolute Differences: %d\n\n",t,sad_ops,sad_2);
+
+%% Display Images;
+
+if display_flag == true
+figure(1)
+    subplot(2,2,1)
+        imshow(img)
+        hold on
+        line(yyline,xxline,'Color','red','LineWidth',2)
+        title("Imported Image")
+        hold off
+    subplot(2,2,2)
+        imshow(im_crop)
+        title("Cropped Image")
+    subplot(2,2,[3 4])
+        imshowpair(ycb,rgb,'montage')
+        title("RGB > YCBCR | YCBCR > RGB")
+    sgt=sgtitle("Original Image Processing");
+    sgt.FontSize=20;
+
+figure(2)
+    subplot(1,3,1)
+        imshow(lumc)
+        title("Luminance")
+    subplot(1,3,2)
+        imshow(cbc)
+        title("Chrominance Blue")
+        impixelinfo
+    subplot(1,3,3)
+        imshow(crc)
+        title("Chrominance Red")
+        impixelinfo
+    sgt = sgtitle("YCbCr Channels, Colourised through rgb2ycb2");
+    sgt.FontSize = 20;
+
+figure(3)
+    subplot(2,2,1)
+        imshow(im_crop)
+        title("Original Image")
+    subplot(2,2,2)
+        imshow(im_2h1v)
+        title("2h1v Downsampled Chrominance")
+    subplot(2,2,3)
+        imshow(im_2h2v)
+        title("2h2v Downsampled Chrominance")
+    subplot(2,2,4)
+        imshow(im_4h4v)
+        title("4h4v Downsampled Chrominance")
+    sgt = sgtitle("Images with Chrominance Downsample");
+    sgt.FontSize = 20;
+
+figure(4)
+    subplot(1,2,1)
+       imshow(lumc)
+       title("Original Luminance Channel")
+    subplot(1,2,2)
+        imshow(im_ds_dct(:,:,1))
+        title("Luminance Channel DCT Compressed")
+    sgt = sgtitle("Images with Luminance-DCT Compression");
+    sgt.FontSize = 20;
+
+figure(5)
+    subplot(2,2,1)
+        imshow(im_ref)
+        title("Reference Frame")
+    subplot(2,2,2)
+        imshow(im_pred)
+        title("Predicted Frame")
+    subplot(2,2,3)
+        imshow(predicted_frame_exs)
+        title("Predicted Frame - Exhaustive Search")
+    subplot(2,2,4)
+        imshow(predicted_frame_nss)
+        title("Predicted Frame - n-Step Search")
+    sgt = sgtitle("Inter-frame Compression");
+    sgt.FontSize = 20;
+
+figure(6)
+        subplot(1,2,1)
+        imshow(predicted_frame_exs)
+        title("Predicted Frame - Exhaustive Search")
+    subplot(1,2,2)
+        imshow(predicted_frame_nss)
+        title("Predicted Frame - n-Step Search")
+    sgt = sgtitle("Inter-frame Compression");
+    sgt.FontSize = 20;
+end  
+    \end{lstlisting}
+\end{codeblock}
